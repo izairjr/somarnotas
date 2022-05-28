@@ -1,14 +1,31 @@
 from datetime import date
-
+from xml.dom import minidom
 import PySimpleGUI as sg
-from Src.funcoes import somanotas, lista_nf, valor_nf
 from pathlib import Path
+import os
 
 sg.theme('DarkAmber')
 now = str(date.today())
-print(now)
-
 log =''
+
+valor_nf = []
+lista_nf =[]
+now = date.today()
+i = 0
+
+def somanotas(caminho):
+    lista_diretorio = os.listdir(caminho)
+    for index in lista_diretorio:
+        print(index)
+        xml = open(f'{caminho}\{index}',encoding='UTF8')
+        nfe = minidom.parse(xml)
+        num_nfe = nfe.getElementsByTagName('nNF')
+        v_nfe = nfe.getElementsByTagName('vNF')
+        try:
+            lista_nf.append(num_nfe[0].firstChild.data)
+            valor_nf.append(v_nfe[0].firstChild.data)
+        except:
+            erros = (f'o arquivo {index}, não é um arquivo válido.')
 
 layout = [
           [sg.Text('Digite aqui o caminho:')],
@@ -27,18 +44,17 @@ while True:
         break
 
     if event == 'Calcular':
-        caminho= str(values['-ent-'])
+        caminho=(str(values['-ent-']))
         if caminho != '':
             window['-OUTPUT-'].update(values['-ent-'])
             somanotas(caminho)
-            try:
-                window['-result1-'].update(values[str(valor_nf)])
-                window['-result2-'].update(values[str(lista_nf)])
-            except:
-                log = Path(f'{caminho}/log{now}.txt')
-                log.touch(exist_ok=True)
-                f = open(log, 'r+')
-                f.writelines(f'O caminho informado {caminho} não é  valido.')
-                f.close()
+            window['-result1-'].update(values[valor_nf])
+            window['-result2-'].update(values[lista_nf])
+        else:
+            window['-OUTPUT-'].update(values[f' Falha ao ler o diretório {caminho}'])
+
+
+
+
 
 window.close()
