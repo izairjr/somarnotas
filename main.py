@@ -30,11 +30,6 @@ except FileExistsError:
 
 
 
-def montalog(infos):
-    camp_log = open(f'c:/somaxml/Resumosomatório{str(datetime.today().strftime("%d-%m-%y-%H"))}.txt', 'w+')
-    infos = infos
-    camp_log.writelines(infos)
-
 def somanotas(caminho):
     try:
         lista_diretorio = os.listdir((caminho))
@@ -71,8 +66,12 @@ def somanotas(caminho):
         except:
             sg.popup (f'O arquivo {index}, não é um arquivo válido.', title='Falha de leitura')
     quant_num = len(lista_nf)
+    listagem_lidos = {}
+    camp_log = open(f'c:/somaxml/Resumosomatório{str(datetime.today().strftime("%d-%m-%y-%H"))}.csv', 'w')
     for i in range(quant_num):
-        montalog(f'{str(lista_nf[i])};{str(valor_nf[i])}\n')
+        listagem_lidos[i] = (f'{str(lista_nf[i])};{valor_nf[i]}')
+        camp_log.write(f'{listagem_lidos[i]}\n')
+        print(f'{listagem_lidos[i]}\n')
 
 def somaSAT(caminho):
     try:
@@ -99,9 +98,15 @@ def somaSAT(caminho):
         try:
             lista_nf.append(num_nfe[0].firstChild.data)
             valor_nf.append(float(v_nfe[0].firstChild.data))
-            montalog(f'{num_nfe[0].firstChild.data};{v_nfe[0].firstChild.data}')
         except:
             sg.popup (f'O arquivo {index}, não é um arquivo válido.', title='Falha de leitura')
+    quant_num = len(lista_nf)
+    listagem_lidos = {}
+    camp_log = open(f'c:/somaxml/Resumosomatório{str(datetime.today().strftime("%d-%m-%y-%H"))}.csv', 'w')
+    for i in range(quant_num):
+        listagem_lidos[i] = (f'{str(lista_nf[i])};{valor_nf[i]}')
+        camp_log.write(f'{listagem_lidos[i]}\n')
+        print(f'{listagem_lidos[i]}\n')
 def _caculaNotas():
     caminho = values['-ent-']
     window['-OUTPUT-'].update(values['-ent-'])
@@ -114,7 +119,8 @@ def _caculaNotas():
                  f'O total do valor de ICMSST: R${round(sum(valor_nf_icmsst),2)}\n'
                  f'O total do valor de IPI é : R${round(sum(valor_nf_ipi),2)}\n'
                  f'O total de valor de PIS é : R${round(sum(valor_nf_pis),2)}\n'
-                 f'O total de valor de COFINS: R${round(sum(valor_nf_cofins),2)}\n')
+                 f'O total de valor de COFINS: R${round(sum(valor_nf_cofins),2)}\n'
+                 f'Numero de notas lidas: {len(lista_nf)}')
 
 def _caculaSAT():
     caminho = values['-ent-']
@@ -127,16 +133,18 @@ def _caculaSAT():
              f'O total do valor de ICMS é: R${round(sum(valor_nf_icms),2)}\n'
              f'O total do valor de IPI é : R${round(sum(valor_nf_ipi),2)}\n'
              f'O total de valor de PIS é : R${round(sum(valor_nf_pis),2)}\n'
-             f'O total de valor de COFINS: R${round(sum(valor_nf_cofins),2)}')
+             f'O total de valor de COFINS: R${round(sum(valor_nf_cofins),2)}\n'
+             f'Numero de cupons lidos: {len(lista_nf)}')
 
 
 layout = [
           [sg.Text('Digite aqui o caminho:')],
           [sg.Input(key='-ent-')],
-          [sg.Text(size=(55, 1), key='-OUTPUT-')],
+          [sg.Text(size=(40, 1), key='-OUTPUT-')],
           [sg.Button('CalcularNF'), sg.Button('CalcularSAT'),sg.Button('Exit')],
-          [sg.Text(size=(80, 1), key='-result1-')],
-          [sg.Text(size=(80, 1), key='-result2-')]
+          [sg.Text(size=(40, 1), key='-result1-')],
+          [sg.Text(size=(40, 1), key='-result2-')],
+          [sg.Text('By:Izair')]
 ]
 window = sg.Window('Calcula Xml - 2.0', layout)
 while True:
