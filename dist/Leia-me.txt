@@ -1,0 +1,4 @@
+Este aplicativo tem como proposta, realizar a leitura de XML de documentos fiscais, soma-los e disponibilizar algumas visões de totais . Estes valores podem servir como um ponto de referência, porém não devem ser usados como Prova Cabal do valor, tãopouco base para geração de tributos e afins. Esta função recai sobre o contador responsável pela entidade.
+
+Obrigado, Aproveite!
+
