@@ -37,12 +37,11 @@ def somanotas(caminho):
         sg.popup(f'O caminho informado, {caminho} , não foi encontrado ou não é válido', title= 'Atenção!')
     for index in lista_diretorio:
         print(index)
-        qtd_nf = 0
         try:
-            xml = open(f'{caminho}\{index}',encoding='UTF8')
+            xml_nf = open(f'{caminho}\{index}',encoding='UTF8')
         except:
             sg.popup(f'O caminho especificado {caminho},não contém XML para leitura', title='Lê caminho')
-        nfe = minidom.parse(xml)
+        nfe = minidom.parse(xml_nf,False)
         num_nfe = nfe.getElementsByTagName('nNF')
         v_nfe = nfe.getElementsByTagName('vNF')
         base_icms = nfe.getElementsByTagName('vBC')
@@ -68,10 +67,13 @@ def somanotas(caminho):
     quant_num = len(lista_nf)
     listagem_lidos = {}
     camp_log = open(f'c:/somaxml/Resumosomatório{str(datetime.today().strftime("%d-%m-%y-%H"))}.csv', 'w')
+    camp_log.write(f'Relação de Cupons Lidos\n')
+    camp_log.write(f'NUMERO;VALOR\n')
     for i in range(quant_num):
         listagem_lidos[i] = (f'{str(lista_nf[i])};{valor_nf[i]}')
         camp_log.write(f'{listagem_lidos[i]}\n')
         print(f'{listagem_lidos[i]}\n')
+    camp_log.write(f'{len(lista_nf)}  Arquivos Foram Lidos.\n')
 
 def somaSAT(caminho):
     try:
@@ -83,10 +85,10 @@ def somaSAT(caminho):
         print(index)
         qtd_nf = 0
         try:
-            xml = open(f'{caminho}\{index}',encoding='UTF8')
+            xml_sat = open(f'{caminho}\{index}',encoding='UTF8')
         except:
             sg.popup(f'O caminho especificado {caminho},não contém XML para leitura', title='Lê caminho')
-        nfe = minidom.parse(xml)
+        nfe = minidom.parse(xml_sat,False)
         num_nfe = nfe.getElementsByTagName('nCFe')
         v_nfe = nfe.getElementsByTagName('vCFe')
         valor_icms =nfe.getElementsByTagName('vICMS')
@@ -103,10 +105,13 @@ def somaSAT(caminho):
     quant_num = len(lista_nf)
     listagem_lidos = {}
     camp_log = open(f'c:/somaxml/Resumosomatório{str(datetime.today().strftime("%d-%m-%y-%H"))}.csv', 'w')
+    camp_log.write(f'Relação de Cupons Lidos\n')
+    camp_log.write(f'NUMERO;VALOR\n')
     for i in range(quant_num):
         listagem_lidos[i] = (f'{str(lista_nf[i])};{valor_nf[i]}')
         camp_log.write(f'{listagem_lidos[i]}\n')
         print(f'{listagem_lidos[i]}\n')
+    camp_log.write(f'{len(lista_nf)} Arquivos Foram Lidos.\n')
 def _caculaNotas():
     caminho = values['-ent-']
     window['-OUTPUT-'].update(values['-ent-'])
@@ -120,7 +125,8 @@ def _caculaNotas():
                  f'O total do valor de IPI é : R${round(sum(valor_nf_ipi),2)}\n'
                  f'O total de valor de PIS é : R${round(sum(valor_nf_pis),2)}\n'
                  f'O total de valor de COFINS: R${round(sum(valor_nf_cofins),2)}\n'
-                 f'Numero de notas lidas: {len(lista_nf)}')
+                 f'Numero de notas lidas: {len(lista_nf)}\n'
+                 f'Um relatório com numero de nota e valor foi criado em = C:\somaxml')
 
 def _caculaSAT():
     caminho = values['-ent-']
@@ -134,7 +140,8 @@ def _caculaSAT():
              f'O total do valor de IPI é : R${round(sum(valor_nf_ipi),2)}\n'
              f'O total de valor de PIS é : R${round(sum(valor_nf_pis),2)}\n'
              f'O total de valor de COFINS: R${round(sum(valor_nf_cofins),2)}\n'
-             f'Numero de cupons lidos: {len(lista_nf)}')
+             f'Numero de cupons lidos: {len(lista_nf)}\n'
+             f'Um relatório com numero de nota e valor foi criado em = C:\somaxml')
 
 
 layout = [
