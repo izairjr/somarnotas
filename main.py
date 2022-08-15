@@ -56,11 +56,14 @@ def somanotas(caminho):
         global sucess
         try:
             mod_doc = int(modelo[0].firstChild.data)
-            if mod_doc != 55 or 65:
-                sg.popup(f'O modelo selecionado foi {mod_doc}, não sendo modelo 55 ou 65 não será possivel calcular.', title = 'Falha')
-                break
-            else:
+            if mod_doc == 65:
                 sucess = True
+            elif mod_doc == 55:
+                sucess = True
+            else:
+                sg.popup(f'O modelo selecionado foi {mod_doc}, não sendo modelo 55 ou 65 não será possivel calcular.',
+                         title='Falha')
+                break
             lista_nf.append(num_nfe[0].firstChild.data)
             valor_nf.append(float(v_nfe[0].firstChild.data))
             base_nf_icms.append(float(base_icms[0].firstChild.data))
