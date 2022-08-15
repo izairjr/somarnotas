@@ -21,6 +21,7 @@ valor_nf_cofins=[]
 now = date.today()
 i = 0
 qtd_nf = 0
+sucess  = False
 
 try:
     path = Path("/somaxml/")
@@ -42,6 +43,7 @@ def somanotas(caminho):
         except:
             sg.popup(f'O caminho especificado {caminho},não contém XML para leitura', title='Lê caminho')
         nfe = minidom.parse(xml_nf,False)
+        modelo = nfe.getElementsByTagName('mod')
         num_nfe = nfe.getElementsByTagName('nNF')
         v_nfe = nfe.getElementsByTagName('vNF')
         base_icms = nfe.getElementsByTagName('vBC')
@@ -51,7 +53,14 @@ def somanotas(caminho):
         valor_ipi = nfe.getElementsByTagName('vIPI')
         valor_PIS = nfe.getElementsByTagName('vPIS')
         valor_COFINS = nfe.getElementsByTagName('vCOFINS')
+        global sucess
         try:
+            mod_doc = int(modelo[0].firstChild.data)
+            if mod_doc != 55:
+                sg.popup(f'O modelo selecionado foi {mod_doc}, não sendo modelo 55 não será possivel calcular.', title = 'Falha')
+                break
+            else:
+                sucess = True
             lista_nf.append(num_nfe[0].firstChild.data)
             valor_nf.append(float(v_nfe[0].firstChild.data))
             base_nf_icms.append(float(base_icms[0].firstChild.data))
@@ -89,6 +98,7 @@ def somaSAT(caminho):
         except:
             sg.popup(f'O caminho especificado {caminho},não contém XML para leitura', title='Lê caminho')
         nfe = minidom.parse(xml_sat,False)
+        modelo = nfe.getElementsByTagName('mod')
         num_nfe = nfe.getElementsByTagName('nCFe')
         v_nfe = nfe.getElementsByTagName('vCFe')
         valor_icms =nfe.getElementsByTagName('vICMS')
@@ -97,11 +107,19 @@ def somaSAT(caminho):
         valor_nf_icms.append(float(valor_icms[0].firstChild.data))
         valor_nf_pis.append(float(valor_PIS[0].firstChild.data))
         valor_nf_cofins.append(float(valor_COFINS[0].firstChild.data))
+        global sucess
         try:
+            mod_doc = int((modelo[0].firstChild.data))
+            if mod_doc != 59:
+                sg.popup(f'O modelo selecionado foi {mod_doc}, não sendo modelo 59 não será possível calcular.', title = 'Falha')
+                break
+            else:
+                 sucess = True
             lista_nf.append(num_nfe[0].firstChild.data)
             valor_nf.append(float(v_nfe[0].firstChild.data))
         except:
             sg.popup (f'O arquivo {index}, não é um arquivo válido.', title='Falha de leitura')
+
     quant_num = len(lista_nf)
     listagem_lidos = {}
     camp_log = open(f'c:/somaxml/Resumosomatório{str(datetime.today().strftime("%d-%m-%y-%H"))}.csv', 'w')
@@ -116,7 +134,9 @@ def _caculaNotas():
     caminho = values['-ent-']
     window['-OUTPUT-'].update(values['-ent-'])
     somanotas(caminho)
-    sg.popup(f'O total das notas somadas : R${round(sum(valor_nf),2)}\n'
+    if sucess == True:
+        sg.popup(
+                 f'O total das notas somadas : R${round(sum(valor_nf),2)}\n'
                  f'O total da base de ICMS é : R${round(sum(base_nf_icms),2)}\n'
                  f'O total do valor de ICMS é: R${round(sum(valor_nf_icms),2)}\n'
                  f'O total da base de ICMSST : R${round(sum(base_nf_icmsst),2)}\n'
@@ -125,21 +145,27 @@ def _caculaNotas():
                  f'O total de valor de PIS é : R${round(sum(valor_nf_pis),2)}\n'
                  f'O total de valor de COFINS: R${round(sum(valor_nf_cofins),2)}\n'
                  f'Numero de notas lidas: {len(lista_nf)}\n'
-                 f'Um relatório com numero de nota e valor foi criado em = C:\somaxml')
-
+                 f'Um relatório com numero de nota e valor foi criado em = C:\somaxml',
+                 title= 'Resultado')
+    else:
+        sg.popup(f'Impossivel calcular XML.', title = 'Falha')
 def _caculaSAT():
     caminho = values['-ent-']
     window['-OUTPUT-'].update(values['-ent-'])
     print('Acionando função de somar arquivos xml')
     somaSAT(caminho)
     print('Acionando somatórios')
-    sg.popup(f'O total dos cupons  somados : R${str(round(sum(valor_nf), 2))}\n'
+    if sucess == True:
+        sg.popup(f'O total dos cupons  somados : R${str(round(sum(valor_nf), 2))}\n'
              f'O total do valor de ICMS é: R${round(sum(valor_nf_icms),2)}\n'
              f'O total do valor de IPI é : R${round(sum(valor_nf_ipi),2)}\n'
              f'O total de valor de PIS é : R${round(sum(valor_nf_pis),2)}\n'
              f'O total de valor de COFINS: R${round(sum(valor_nf_cofins),2)}\n'
              f'Numero de cupons lidos: {len(lista_nf)}\n'
-             f'Um relatório com numero de nota e valor foi criado em = C:\somaxml')
+             f'Um relatório com numero de nota e valor foi criado em = C:\somaxml',
+             title= 'Resultado')
+    else:
+        sg.popup(f'Impossivel calcular XML.', title = 'Falha')
 
 
 layout = [
