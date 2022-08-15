@@ -116,7 +116,6 @@ def _caculaNotas():
     caminho = values['-ent-']
     window['-OUTPUT-'].update(values['-ent-'])
     somanotas(caminho)
-    sg.popup(f'A lista  de notas é {str(lista_nf)}', title='Resultado')
     sg.popup(f'O total das notas somadas : R${round(sum(valor_nf),2)}\n'
                  f'O total da base de ICMS é : R${round(sum(base_nf_icms),2)}\n'
                  f'O total do valor de ICMS é: R${round(sum(valor_nf_icms),2)}\n'
@@ -134,7 +133,6 @@ def _caculaSAT():
     print('Acionando função de somar arquivos xml')
     somaSAT(caminho)
     print('Acionando somatórios')
-    sg.popup(f'A lista  de Cupons é {str(lista_nf)}', title='Resultado')
     sg.popup(f'O total dos cupons  somados : R${str(round(sum(valor_nf), 2))}\n'
              f'O total do valor de ICMS é: R${round(sum(valor_nf_icms),2)}\n'
              f'O total do valor de IPI é : R${round(sum(valor_nf_ipi),2)}\n'
