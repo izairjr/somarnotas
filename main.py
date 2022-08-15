@@ -56,8 +56,8 @@ def somanotas(caminho):
         global sucess
         try:
             mod_doc = int(modelo[0].firstChild.data)
-            if mod_doc != 55:
-                sg.popup(f'O modelo selecionado foi {mod_doc}, não sendo modelo 55 não será possivel calcular.', title = 'Falha')
+            if mod_doc != 55 or 65:
+                sg.popup(f'O modelo selecionado foi {mod_doc}, não sendo modelo 55 ou 65 não será possivel calcular.', title = 'Falha')
                 break
             else:
                 sucess = True
